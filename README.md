@@ -1,9 +1,9 @@
 <div align="center">
 
-# ♟️ CHESS AI — Autonomous Multi-Level AI Chess Agent
+# ♟️ CHESS-AI — Autonomous Multi-Level AI Chess Agent
 
 [![Author](https://img.shields.io/badge/Author-Ishant6565-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Ishant6565)
-[![Repository](https://img.shields.io/badge/GitHub-Ishant6565%2FCHESS-09090b?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Ishant6565/CHESS)
+[![Repository](https://img.shields.io/badge/GitHub-Ishant6565%2FCHESS--AI-09090b?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Ishant6565/CHESS-AI)
 [![License](https://img.shields.io/badge/License-MIT-18181b?style=for-the-badge)](LICENSE)
 [![React](https://img.shields.io/badge/React_19-000000?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-09090b?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -82,8 +82,8 @@ flowchart TD
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Ishant6565/CHESS.git
-cd CHESS
+git clone https://github.com/Ishant6565/CHESS-AI.git
+cd CHESS-AI
 ```
 
 ### 2. Launch the Interactive Web Application
@@ -155,7 +155,7 @@ CHESS/
 Crafted with dedication by **[Ishant6565](https://github.com/Ishant6565)**.
 
 - **GitHub**: [@Ishant6565](https://github.com/Ishant6565)
-- **Repository**: [Ishant6565/CHESS](https://github.com/Ishant6565/CHESS)
+- **Repository**: [Ishant6565/CHESS-AI](https://github.com/Ishant6565/CHESS-AI)
 
 ---
 

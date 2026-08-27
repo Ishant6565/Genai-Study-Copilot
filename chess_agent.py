@@ -4,7 +4,7 @@
 Multi-Level AI Chess Engine featuring Minimax Alpha-Beta Pruning, PST Evaluation, and Live Move Commentary.
 
 Author: Ishant6565 (https://github.com/Ishant6565)
-Repository: https://github.com/Ishant6565/CHESS
+Repository: https://github.com/Ishant6565/CHESS-AI
 License: MIT
 """
 

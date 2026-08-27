@@ -1,5 +1,5 @@
 {
-  "name": "CHESS",
+  "name": "CHESS-AI",
   "private": true,
   "version": "1.0.0",
   "description": "Autonomous Multi-Level AI Chess Agent powered by Minimax Alpha-Beta Pruning, PST Heuristics, and Real-Time LLM Commentary.",

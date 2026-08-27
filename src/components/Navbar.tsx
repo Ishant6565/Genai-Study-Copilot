@@ -79,13 +79,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* GitHub Repo */}
           <a
-            href="https://github.com/Ishant6565/CHESS"
+            href="https://github.com/Ishant6565/CHESS-AI"
             target="_blank"
             rel="noopener noreferrer"
             className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium text-zinc-300 bg-white/5 hover:bg-white/15 hover:text-white border border-white/10 transition-all group"
           >
             <GithubIcon className="w-3.5 h-3.5 text-zinc-400 group-hover:text-white transition-colors" />
-            <span>CHESS</span>
+            <span>CHESS-AI</span>
           </a>
         </div>
 
