@@ -1,8 +1,8 @@
 {
-  "name": "CineAgent",
+  "name": "CHESS",
   "private": true,
   "version": "1.0.0",
-  "description": "Personalized Movie Recommendation Agent powered by Exa Neural Search and GPT-4o Agent architecture.",
+  "description": "Autonomous Multi-Level AI Chess Agent powered by Minimax Alpha-Beta Pruning, PST Heuristics, and Real-Time LLM Commentary.",
   "author": "Ishant6565",
   "type": "module",
   "scripts": {
