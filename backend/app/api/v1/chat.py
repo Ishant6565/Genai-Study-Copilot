@@ -1,167 +1,106 @@
-from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import List
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_
-from pydantic import BaseModel
+from sqlalchemy import select, desc
+from sqlalchemy.orm import selectinload
+
 from app.core.database import get_db
-from app.core.security import get_current_user
-from app.models.user import User
 from app.models.conversation import Conversation, Message
-from app.schemas.chat import (
-    ChatRequest, ChatResponse, ConversationResponse,
-    ConversationSummaryResponse, MessageResponse
-)
-from app.services.rag_service import execute_rag_query
+from app.schemas import ChatRequest, ChatResponse, ConversationResponse, MessageResponse, CitationItem
+from app.services.rag_service import execute_rag_chat
 
-router = APIRouter(prefix="/chat", tags=["AI Chat & RAG"])
+router = APIRouter(prefix="/chat", tags=["Chat & RAG"])
 
-
-class RenameConversationRequest(BaseModel):
-    title: str
+DEFAULT_USER_ID = "default_user_001"
 
 
 @router.post("", response_model=ChatResponse)
-async def ask_study_copilot(
-    request: ChatRequest,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """
-    Query the AI Study Copilot using RAG:
-    - Embeds question
-    - Retrieves top-k relevant document chunks from pgvector
-    - Constructs grounded prompt with strict anti-hallucination rules
-    - Returns answer with verifiable inline citations and latency metrics
-    """
-    result = await execute_rag_query(
-        query=request.message,
-        user_id=current_user.id,
-        conversation_id=request.conversation_id,
-        document_id=request.document_id,
-        db=db,
-        model=request.model or "gpt-4o-mini"
-    )
-
-    return {
-        "conversation_id": result["conversation_id"],
-        "message": result["message"]
-    }
+async def chat_rag(request: ChatRequest, db: AsyncSession = Depends(get_db)):
+    """Ask questions grounded in the PDF document."""
+    try:
+        conv_id, message_resp = await execute_rag_chat(
+            db=db,
+            user_id=DEFAULT_USER_ID,
+            message_text=request.message,
+            conversation_id=request.conversation_id,
+            document_id=request.document_id
+        )
+        return ChatResponse(conversation_id=conv_id, message=message_resp)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/conversations", response_model=List[ConversationSummaryResponse])
-async def list_conversations(
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """List all previous study conversations for the user."""
-    stmt = (
+@router.get("/conversations", response_model=List[ConversationResponse])
+async def list_conversations(db: AsyncSession = Depends(get_db)):
+    """List recent conversation history."""
+    result = await db.execute(
         select(Conversation)
-        .where(Conversation.user_id == current_user.id)
-        .order_by(Conversation.updated_at.desc())
+        .options(selectinload(Conversation.messages))
+        .order_by(desc(Conversation.updated_at))
     )
-    result = await db.execute(stmt)
     conversations = result.scalars().all()
     
-    summary_list = []
+    response = []
     for conv in conversations:
-        # Get count of messages
-        msg_stmt = select(Message).where(Message.conversation_id == conv.id)
-        msg_res = await db.execute(msg_stmt)
-        msg_count = len(msg_res.scalars().all())
-        
-        summary_list.append(ConversationSummaryResponse(
-            id=conv.id,
-            title=conv.title,
-            document_id=conv.document_id,
-            created_at=conv.created_at,
-            updated_at=conv.updated_at,
-            message_count=msg_count
-        ))
-        
-    return summary_list
+        msgs = [
+            MessageResponse(
+                id=m.id,
+                role=m.role,
+                content=m.content,
+                citations=[CitationItem(**c) for c in (m.citations or [])],
+                created_at=m.created_at
+            )
+            for m in conv.messages
+        ]
+        response.append(
+            ConversationResponse(
+                id=conv.id,
+                title=conv.title,
+                created_at=conv.created_at,
+                messages=msgs
+            )
+        )
+    return response
 
 
 @router.get("/conversations/{conversation_id}", response_model=ConversationResponse)
-async def get_conversation(
-    conversation_id: str,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Get conversation message history and citation cards."""
-    stmt = select(Conversation).where(
-        and_(Conversation.id == conversation_id, Conversation.user_id == current_user.id)
+async def get_conversation(conversation_id: str, db: AsyncSession = Depends(get_db)):
+    """Get single conversation by ID."""
+    result = await db.execute(
+        select(Conversation)
+        .options(selectinload(Conversation.messages))
+        .where(Conversation.id == conversation_id)
     )
-    result = await db.execute(stmt)
     conv = result.scalar_one_or_none()
-
     if not conv:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Conversation not found.")
+        raise HTTPException(status_code=404, detail="Conversation not found")
 
-    msg_stmt = select(Message).where(Message.conversation_id == conv.id).order_by(Message.created_at.asc())
-    msg_res = await db.execute(msg_stmt)
-    messages = msg_res.scalars().all()
-
+    msgs = [
+        MessageResponse(
+            id=m.id,
+            role=m.role,
+            content=m.content,
+            citations=[CitationItem(**c) for c in (m.citations or [])],
+            created_at=m.created_at
+        )
+        for m in conv.messages
+    ]
     return ConversationResponse(
         id=conv.id,
         title=conv.title,
-        document_id=conv.document_id,
         created_at=conv.created_at,
-        updated_at=conv.updated_at,
-        messages=messages
+        messages=msgs
     )
 
 
-@router.patch("/conversations/{conversation_id}", response_model=ConversationResponse)
-async def rename_conversation(
-    conversation_id: str,
-    payload: RenameConversationRequest,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Rename a conversation title."""
-    stmt = select(Conversation).where(
-        and_(Conversation.id == conversation_id, Conversation.user_id == current_user.id)
-    )
-    result = await db.execute(stmt)
+@router.delete("/conversations/{conversation_id}")
+async def delete_conversation(conversation_id: str, db: AsyncSession = Depends(get_db)):
+    """Delete a conversation session."""
+    result = await db.execute(select(Conversation).where(Conversation.id == conversation_id))
     conv = result.scalar_one_or_none()
-
     if not conv:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Conversation not found.")
-
-    conv.title = payload.title.strip() or "Untitled Chat"
-    await db.commit()
-    await db.refresh(conv)
-
-    msg_stmt = select(Message).where(Message.conversation_id == conv.id).order_by(Message.created_at.asc())
-    msg_res = await db.execute(msg_stmt)
-    messages = msg_res.scalars().all()
-
-    return ConversationResponse(
-        id=conv.id,
-        title=conv.title,
-        document_id=conv.document_id,
-        created_at=conv.created_at,
-        updated_at=conv.updated_at,
-        messages=messages
-    )
-
-
-@router.delete("/conversations/{conversation_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_conversation(
-    conversation_id: str,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Delete a conversation and message history."""
-    stmt = select(Conversation).where(
-        and_(Conversation.id == conversation_id, Conversation.user_id == current_user.id)
-    )
-    result = await db.execute(stmt)
-    conv = result.scalar_one_or_none()
-
-    if not conv:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Conversation not found.")
+        raise HTTPException(status_code=404, detail="Conversation not found")
 
     await db.delete(conv)
     await db.commit()
-    return None
+    return {"message": "Conversation deleted successfully"}
