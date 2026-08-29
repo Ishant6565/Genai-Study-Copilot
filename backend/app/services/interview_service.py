@@ -1,12 +1,32 @@
+import re
 import uuid
+import json
 from typing import List, Dict, Any, Tuple
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
+from openai import AsyncOpenAI
 
 from app.models.interview import InterviewSession, InterviewQuestion, InterviewEvaluation
 from app.core.config import settings
 from app.core.logging import logger
+
+openai_client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else None
+
+# Stop words to ignore during semantic keyword extraction
+STOP_WORDS = {
+    "a", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any", "are",
+    "as", "at", "be", "because", "been", "before", "being", "below", "between", "both", "but",
+    "by", "can", "could", "did", "do", "does", "doing", "down", "during", "each", "few", "for",
+    "from", "further", "had", "has", "have", "having", "he", "her", "here", "hers", "herself",
+    "him", "himself", "his", "how", "i", "if", "in", "into", "is", "it", "its", "itself", "just",
+    "me", "more", "most", "my", "myself", "no", "nor", "not", "now", "of", "off", "on", "once",
+    "only", "or", "other", "our", "ours", "ourselves", "out", "over", "own", "same", "she",
+    "should", "so", "some", "such", "than", "that", "the", "their", "theirs", "them", "themselves",
+    "then", "there", "these", "they", "this", "those", "through", "to", "too", "under", "until",
+    "up", "very", "was", "we", "were", "what", "when", "where", "which", "while", "who", "whom",
+    "why", "with", "would", "you", "your", "yours", "yourself", "yourselves"
+}
 
 # Pre-curated high-yield interview question sets by track & seniority
 TRACK_QUESTION_TEMPLATES: Dict[str, List[Dict[str, Any]]] = {
@@ -59,7 +79,7 @@ TRACK_QUESTION_TEMPLATES: Dict[str, List[Dict[str, Any]]] = {
             "question_text": "How do you architect a high-concurrency API using FastAPI, AsyncIO, and SQLAlchemy Async Session without causing database connection starvation?",
             "category": "Backend Engineering",
             "difficulty": "Hard",
-            "ideal_answer": "Use `asyncpg` with SQLAlchemy `AsyncSession` pooled via `QueuePool` with sensible `pool_size` (e.g. 20) and `max_overflow`. Avoid running blocking CPU-heavy code inside `async def` without `run_in_threadpool` or background task queues (Celery/Redis). Always ensure database sessions are scoped and closed cleanly using async context managers.",
+            "ideal_answer": "Use asyncpg with SQLAlchemy AsyncSession pooled via QueuePool with sensible pool_size (e.g. 20) and max_overflow. Avoid running blocking CPU-heavy code inside async def without run_in_threadpool or background task queues (Celery/Redis). Always ensure database sessions are scoped and closed cleanly using async context managers.",
             "follow_up_question": "How does Python's GIL impact CPU-bound vs I/O-bound async workloads in FastAPI?"
         },
         {
@@ -80,7 +100,7 @@ TRACK_QUESTION_TEMPLATES: Dict[str, List[Dict[str, Any]]] = {
             "question_text": "How do you implement JWT authentication securely, and how do you handle instantaneous token revocation before expiration?",
             "category": "Security & Auth",
             "difficulty": "Hard",
-            "ideal_answer": "Short-lived Access Tokens (15 mins) with rotating Refresh Tokens stored in secure HTTP-only cookies. Instant revocation can be handled via a Redis token denylist or versioned user token generation IDs (`token_version` column in DB checked upon critical operations).",
+            "ideal_answer": "Short-lived Access Tokens (15 mins) with rotating Refresh Tokens stored in secure HTTP-only cookies. Instant revocation can be handled via a Redis token denylist or versioned user token generation IDs (token_version column in DB checked upon critical operations).",
             "follow_up_question": "Why is storing JWT tokens in localStorage vulnerable to XSS attacks?"
         }
     ],
@@ -126,6 +146,101 @@ TRACK_QUESTION_TEMPLATES: Dict[str, List[Dict[str, Any]]] = {
 }
 
 
+def extract_keywords(text: str) -> set:
+    """Extract clean domain keywords from text, filtering out stop words."""
+    cleaned = re.sub(r'[^a-zA-Z0-9_\-\+]', ' ', text.lower())
+    words = cleaned.split()
+    return {w for w in words if len(w) > 2 and w not in STOP_WORDS}
+
+
+async def evaluate_answer_semantically(
+    question_text: str,
+    ideal_answer: str,
+    candidate_answer: str
+) -> Tuple[float, str]:
+    """
+    Intelligently evaluate technical answer based on conceptual accuracy,
+    depth, key architectural concepts, and trade-offs.
+    """
+    clean_ans = candidate_answer.strip()
+    
+    # 1. Check for blank, refusal, or gibberish
+    if not clean_ans or len(clean_ans) < 8:
+        return 1.5, "No substantial answer provided. Be sure to articulate your approach even if unsure."
+        
+    lowered = clean_ans.lower()
+    refusals = ["i don't know", "i do not know", "no idea", "skip", "idk", "pass", "not sure"]
+    if any(lowered == r or lowered.startswith(r) for r in refusals) and len(clean_ans.split()) < 10:
+        return 3.0, "Candidate declined to answer or stated unfamiliarity with the topic. Recommended to review foundational concepts."
+
+    # 2. If OpenAI is available, run LLM-as-a-Judge evaluation
+    if openai_client and settings.OPENAI_API_KEY:
+        try:
+            eval_prompt = f"""You are a Principal Software Engineering Interviewer evaluating a candidate's response.
+Question: {question_text}
+Ideal Model Answer: {ideal_answer}
+Candidate's Answer: {candidate_answer}
+
+Evaluate the candidate's answer on technical accuracy, depth, and relevance on a scale of 1.0 to 10.0.
+Output valid JSON in this exact structure:
+{{
+  "score": 8.5,
+  "feedback": "2-3 concise sentences detailing what was accurate, what specific concepts were well-explained, and what key trade-offs or mechanisms were missing."
+}}
+"""
+            response = await openai_client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": "You are an expert technical hiring bar-raiser. Respond strictly with JSON."},
+                    {"role": "user", "content": eval_prompt}
+                ],
+                temperature=0.2,
+                response_format={"type": "json_object"}
+            )
+            data = json.loads(response.choices[0].message.content)
+            score = float(data.get("score", 7.5))
+            feedback = data.get("feedback", "Good technical reasoning provided.")
+            return round(score, 1), feedback
+        except Exception as e:
+            logger.warning(f"OpenAI evaluation failed, falling back to deterministic semantic scorer: {e}")
+
+    # 3. Deterministic Concept & Semantic Scorer (High Precision Offline)
+    ideal_keywords = extract_keywords(ideal_answer)
+    candidate_keywords = extract_keywords(candidate_answer)
+    
+    if not ideal_keywords:
+        ideal_keywords = extract_keywords(question_text)
+        
+    # Calculate conceptual overlap
+    matched_keywords = ideal_keywords.intersection(candidate_keywords)
+    overlap_ratio = len(matched_keywords) / max(1, len(ideal_keywords))
+    
+    # Calculate depth & vocabulary richness
+    unique_words = len(set(candidate_answer.lower().split()))
+    total_words = len(candidate_answer.split())
+    
+    # Base score calculated from concept coverage
+    if overlap_ratio >= 0.40:
+        raw_score = 8.5 + min(1.3, (overlap_ratio - 0.40) * 2.5)
+        good_terms = list(matched_keywords)[:4]
+        feedback = f"Strong technical explanation. Accurately covered core concepts including {', '.join(good_terms)}. Well-structured reasoning."
+    elif overlap_ratio >= 0.22:
+        raw_score = 7.0 + (overlap_ratio - 0.22) * 8.0
+        good_terms = list(matched_keywords)[:3]
+        missing_terms = list(ideal_keywords - candidate_keywords)[:3]
+        feedback = f"Solid foundation covering {', '.join(good_terms)}. To reach senior level, also elaborate on {', '.join(missing_terms)}."
+    elif overlap_ratio >= 0.10 or total_words >= 25:
+        raw_score = 5.8 + (overlap_ratio * 10)
+        missing_terms = list(ideal_keywords - candidate_keywords)[:3]
+        feedback = f"Partially on-track, but missed key architectural specifics such as {', '.join(missing_terms)}. Recommended to elaborate on concrete mechanics."
+    else:
+        raw_score = 4.0 + min(1.5, total_words * 0.05)
+        feedback = "Answer is too brief or lacks core technical domain terminology. Review the model answer for the recommended architectural structure."
+
+    final_score = round(min(9.8, max(2.0, raw_score)), 1)
+    return final_score, feedback
+
+
 async def create_interview_session(
     db: AsyncSession,
     role_title: str,
@@ -138,7 +253,6 @@ async def create_interview_session(
     """Initialize a new interview session and generate curated questions."""
     session_id = f"int-{uuid.uuid4().hex[:8]}"
     
-    # 1. Create Session Record
     session_obj = InterviewSession(
         id=session_id,
         role_title=role_title,
@@ -152,10 +266,8 @@ async def create_interview_session(
     )
     db.add(session_obj)
     
-    # 2. Pick or generate questions
     template_key = track if track in TRACK_QUESTION_TEMPLATES else "GenAI & RAG"
     raw_questions = TRACK_QUESTION_TEMPLATES.get(template_key, TRACK_QUESTION_TEMPLATES["GenAI & RAG"])
-    
     questions_to_add = raw_questions[:total_questions]
     
     for idx, q_data in enumerate(questions_to_add):
@@ -173,7 +285,6 @@ async def create_interview_session(
         
     await db.commit()
     
-    # Reload with questions
     result = await db.execute(
         select(InterviewSession)
         .options(selectinload(InterviewSession.questions))
@@ -189,7 +300,7 @@ async def submit_candidate_answer(
     answer_text: str,
     is_follow_up: bool = False
 ) -> Tuple[InterviewQuestion, bool, int]:
-    """Record candidate answer and evaluate question state."""
+    """Record candidate answer and evaluate question state with semantic scoring."""
     result = await db.execute(
         select(InterviewQuestion).where(InterviewQuestion.id == question_id)
     )
@@ -202,17 +313,14 @@ async def submit_candidate_answer(
     else:
         question_obj.candidate_answer = answer_text
         
-    # Evaluate individual question quality based on answer depth and key term matching
-    word_count = len(answer_text.split())
-    if word_count > 60:
-        question_obj.score = 9.0
-        question_obj.feedback = "Strong technical explanation with clear structural breakdown and relevant terminology."
-    elif word_count > 25:
-        question_obj.score = 7.5
-        question_obj.feedback = "Good foundation, covered the main concept but could include more edge-case handling and implementation nuances."
-    else:
-        question_obj.score = 5.5
-        question_obj.feedback = "Brief response. Recommended to expand with concrete architectural trade-offs and real-world examples."
+    # Evaluate technical answer semantically based on concepts and accuracy
+    score, feedback = await evaluate_answer_semantically(
+        question_text=question_obj.question_text,
+        ideal_answer=question_obj.ideal_answer or "",
+        candidate_answer=answer_text
+    )
+    question_obj.score = score
+    question_obj.feedback = feedback
 
     # Update session progress
     session_res = await db.execute(
@@ -222,7 +330,6 @@ async def submit_candidate_answer(
     )
     session_obj = session_res.scalar_one()
     
-    # Advance question index
     next_idx = session_obj.current_question_index + 1
     session_obj.current_question_index = next_idx
     
@@ -258,37 +365,51 @@ async def generate_interview_evaluation(
 
     # Calculate scores from questions
     scores = [q.score for q in session_obj.questions if q.score is not None]
-    avg_score = sum(scores) / len(scores) if scores else 8.0
+    avg_score = sum(scores) / len(scores) if scores else 7.5
     overall_percentage = round(avg_score * 10, 1)
 
     if overall_percentage >= 88:
         verdict = "Strong Hire"
-    elif overall_percentage >= 75:
+    elif overall_percentage >= 74:
         verdict = "Hire"
     elif overall_percentage >= 60:
         verdict = "Lean Hire"
     else:
         verdict = "Needs Improvement"
 
+    # Identify strong categories and areas for growth
+    strong_points = []
+    growth_points = []
+    
+    for q in session_obj.questions:
+        if q.score and q.score >= 8.0:
+            strong_points.append(f"Strong grasp of {q.category} and architectural mechanics.")
+        elif q.score and q.score < 7.0:
+            growth_points.append(f"Deepen knowledge in {q.category} (e.g. edge-case trade-offs).")
+
+    if not strong_points:
+        strong_points = [
+            f"Demonstrated foundational understanding of {session_obj.track} topics.",
+            "Attempted all questions with structured explanations."
+        ]
+    if not growth_points:
+        growth_points = [
+            "Quantify trade-offs with concrete production metrics (e.g. P99 latency, RAM overhead).",
+            "Discuss failover and zero-downtime migration strategies in system design."
+        ]
+
     eval_obj = InterviewEvaluation(
         id=f"eval-{uuid.uuid4().hex[:8]}",
         session_id=session_id,
         overall_score=overall_percentage,
         hiring_verdict=verdict,
-        technical_depth_score=round(min(10.0, avg_score + 0.2), 1),
-        communication_score=round(min(10.0, avg_score + 0.5), 1),
+        technical_depth_score=round(min(10.0, avg_score + (0.3 if avg_score > 7 else -0.3)), 1),
+        communication_score=round(min(10.0, max(4.0, avg_score + 0.4)), 1),
         problem_solving_score=round(avg_score, 1),
-        edge_case_score=round(max(5.0, avg_score - 0.5), 1),
-        strengths=[
-            f"Demonstrated solid grasp of {session_obj.track} architectural fundamentals.",
-            "Clear verbal articulation with structured point-by-point explanations.",
-            "Good intuition for high-throughput scaling and anti-hallucination guardrails."
-        ],
-        areas_to_improve=[
-            "Quantify trade-offs with concrete metrics (e.g. P99 latency, memory overhead).",
-            "Elaborate more on error handling, failover mechanics, and distributed race conditions."
-        ],
-        summary=f"Candidate demonstrated {verdict} capability for {session_obj.seniority} {session_obj.role_title}. Exhibited strong domain vocabulary, structured communication, and sound architectural reasoning."
+        edge_case_score=round(max(3.0, avg_score - 0.6), 1),
+        strengths=strong_points[:3],
+        areas_to_improve=growth_points[:3],
+        summary=f"Candidate demonstrated {verdict} level capability for {session_obj.seniority} {session_obj.role_title}. Exhibited solid domain vocabulary, structured communication, and technical reasoning across core interview pillars."
     )
     
     db.add(eval_obj)
