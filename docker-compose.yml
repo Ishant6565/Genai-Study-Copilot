@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  # PostgreSQL with pgvector extension
+  studypilot-db:
+    image: pgvector/pgvector:pg16
+    container_name: studypilot-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword2026
+      POSTGRES_DB: studypilot_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d studypilot_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis for task queues and caching
+  studypilot-redis:
+    image: redis:7-alpine
+    container_name: studypilot-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Backend Service
+  studypilot-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: studypilot-backend
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgrespassword2026@studypilot-db:5432/studypilot_db
+      - SYNC_DATABASE_URL=postgresql://postgres:postgrespassword2026@studypilot-db:5432/studypilot_db
+      - REDIS_URL=redis://studypilot-redis:6379/0
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - SECRET_KEY=${SECRET_KEY:-studypilot-super-secret-production-grade-key-change-in-prod-2026}
+    depends_on:
+      studypilot-db:
+        condition: service_healthy
+      studypilot-redis:
+        condition: service_healthy
+    volumes:
+      - ./backend/uploads:/app/uploads
+
+  # Next.js 15 Frontend
+  studypilot-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: studypilot-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+    depends_on:
+      - studypilot-backend
+
+volumes:
+  postgres_data:
+  redis_data:

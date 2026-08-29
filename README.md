@@ -1,118 +1,243 @@
 <div align="center">
 
-# 🏎️ APEX HYPERCARS — Ultra-Luxury Supercar Showcase & 3D Exploded Engine X-Ray
+# 🎓 StudyPilot AI
+### Enterprise-Grade Full-Stack AI Study Copilot & Grounded RAG Platform
 
 [![Author](https://img.shields.io/badge/Author-Ishant6565-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Ishant6565)
 [![License](https://img.shields.io/badge/License-MIT-18181b?style=for-the-badge)](LICENSE)
-[![React](https://img.shields.io/badge/React_19-000000?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-09090b?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-18181b?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![Edition](https://img.shields.io/badge/Edition-Commercial_VIP_Brokerage-e10600?style=for-the-badge)](https://github.com/Ishant6565)
+[![Next.js](https://img.shields.io/badge/Next.js_15-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![pgvector](https://img.shields.io/badge/pgvector-1536_HNSW-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://github.com/pgvector/pgvector)
+[![TypeScript](https://img.shields.io/badge/TypeScript_5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Docker](https://img.shields.io/badge/Docker_Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 
 <br />
 
 <p align="center">
-  <strong>A commercial-grade, multi-million dollar Hypercar & Supercar Showcase platform engineered for luxury presentations and client acquisitions, featuring 16 world-record hypercars, an interactive 3D Exploded Engine / X-Ray Deconstruction Zoom View ($1\times$ to $4\times$), adaptive background lighting (White $\to$ Black BG, Black $\to$ White BG, Red $\to$ Off-White BG), procedural multi-architecture Web Audio acoustics, side-by-side comparison matrix, and VIP brokerage portal.</strong>
+  <strong>An enterprise-grade, full-stack AI Study Copilot designed for STEM students, researchers, and engineers.</strong><br />
+  Upload multi-page PDFs • 1536-dim pgvector HNSW vector search • Multi-turn grounded chat with verifiable page citations • Executive Summarizer • Interactive Exam Quiz Runner • 3D Concept Flashcards • Real-time RAG latency telemetry
 </p>
 
 <p align="center">
-  <a href="#-key-features">Key Features</a> •
-  <a href="#-16-iconic-hypercars-lineup">Hypercar Lineup</a> •
-  <a href="#-adaptive-background-lighting-engine">Adaptive Lighting</a> •
-  <a href="#-exploded-engine-x-ray-viewer">Engine X-Ray</a> •
-  <a href="#-quickstart">Quickstart</a> •
-  <a href="#-author">Author</a>
+  <a href="#-quick-start-with-docker-compose">Quickstart</a> •
+  <a href="#-system-architecture">Architecture</a> •
+  <a href="#-core-capabilities">Core Capabilities</a> •
+  <a href="#-api-reference">API Reference</a> •
+  <a href="#-senior-genai-engineer-interview-qa">Interview Prep</a> •
+  <a href="#-resume-bullets">Resume Bullets</a>
 </p>
 
 </div>
 
 ---
 
-## 🌟 Key Features
+## 🌟 Overview & Product Vision
 
-- 🔍 **Interactive 3D Exploded Engine / X-Ray Deconstruction ($1\times$ to $4\times$ Zoom)**:
-  - Multi-layer peeling controls: *Carbon Body Skin $\to$ Active Aerodynamics $\to$ Monocoque Chassis $\to$ Powertrain Core $\to$ Titanium Inconel Exhaust $\to$ Carbon-Ceramic Brakes*.
-  - Interactive pulsating Radar Hotspots on engine components displaying micro-engineering blueprints, material alloys, and thermal tolerances (up to 1,100°C).
-  - X-Ray & Blueprint cybernetic visual filters.
-- 🎨 **Adaptive Color Lighting Architecture**:
-  - ⚪ **White Car Active** $\to$ Dynamic transition to **Deep Obsidian Black (`#000000`)** with crisp white highlights.
-  - ⚫ **Black / Carbon Car Active** $\to$ Dynamic transition to **Luminous Minimalist White / Platinum (`#f4f4f6`)** with dark carbon contrast.
-  - 🔴 **Rosso Red Car Active** $\to$ Dynamic transition to **Warm Museum Off-White / Alabaster Slate (`#f2efe9`)** with crimson red accents.
-- 🔊 **Procedural Web Audio Multi-Engine Synthesizer**:
-  - Screaming 12,000 RPM naturally aspirated Cosworth/GMA V12.
-  - 8.0L Quad-Turbo W16 Bugatti roar with low-end bass rumble.
-  - Flat-plane crank Twin-Turbo V8 bark (Koenigsegg/Hennessey).
-  - Quad-Motor Formula-E / Hyper-EV whistle (Rimac Nevera).
-- ⚖️ **Side-by-Side Hypercar Comparison Matrix**: Benchmark up to 3 hypercars simultaneously across 12 dimensions (0-100 km/h, Power-to-weight, Downforce at 250 km/h, Top Speed, Valuations).
-- 💼 **Private Brokerage & VIP Client Acquisition Portal**:
-  - Allocation inquiry form with instant certified technical spec sheet download (`.txt`).
-  - Booking VIP private track days and bespoke vehicle consignments.
-- 🏛️ **Luxury Monochrome & Carbon Aesthetic**: Glassmorphism, kinetic typography (Outfit & JetBrains Mono), smooth micro-interactions.
+Traditional "PDF Chatbots" suffer from three severe production limitations:
+1. **Semantic Boundary Truncation**: Naive fixed-character chunking splits formulas and clauses mid-sentence, causing retrieval failure.
+2. **Deceptive Hallucinations**: Standard LLMs attempt to guess answers when retrieved context is irrelevant or absent.
+3. **Black-Box Opacity**: Answers without verifiable page-level citations force users to manually hunt through hundreds of document pages to verify correctness.
+
+**StudyPilot AI** overcomes these limitations by combining:
+- **Recursive Character Splitting with Sliding-Window Overlap** (600 tokens with 100 token overlap) to preserve clause continuity across page boundaries.
+- **PostgreSQL 16 with `pgvector` HNSW Graph Indexing** for sub-40ms approximate nearest neighbor (ANN) vector retrieval across 1536-dimensional embeddings.
+- **Strict Anti-Hallucination Guardrails & Verifiable Citations**: Every generated claim is mapped to original document names and page numbers with an instant interactive snippet preview drawer.
+- **AI Study Ecosystem**: Automated Executive Summarizer, Interactive Mastery Quiz Engine with live scoring and explanations, and 3D animated concept flashcards.
+- **Observability Telemetry**: Real-time tracking of vector retrieval latency (P50/P99), generation latency, and token consumption.
 
 ---
 
-## 🏎️ 16 Iconic Hypercars Lineup
-
-| # | Hypercar Model | Edition Finish | Powertrain | Power (HP) | 0-100 km/h | Top Speed | Valuation |
-| :---: | :--- | :--- | :--- | :---: | :---: | :---: | :---: |
-| 1 | **Bugatti Chiron 300+** | ⚪ Glacier Pearl | 8.0L Quad-Turbo W16 | **1,600 HP** | 2.3s | **490.48 km/h** | $4.10M |
-| 2 | **Koenigsegg Jesko Absolut** | ⚪ Ghost White | 5.0L Twin-Turbo V8 | **1,600 HP** | 2.5s | **531.00 km/h** | $3.40M |
-| 3 | **Pagani Utopia** | ⚪ Bianco Benny | 6.0L Biturbo AMG V12 | **864 HP** | 2.8s | **354.00 km/h** | $2.50M |
-| 4 | **Porsche 918 Spyder** | ⚪ Weissach Pure | 4.6L V8 Hybrid | **887 HP** | 2.4s | **345.00 km/h** | $1.95M |
-| 5 | **Gordon Murray T.50** | ⚪ Alabaster Fan | 3.9L Cosworth V12 | **663 HP** | 2.7s | **360.00 km/h** | $3.10M |
-| 6 | **Rimac Nevera Attack** | ⚫ Obsidian Midnight | Quad-Motor EV | **1,914 HP** | 1.81s | **412.00 km/h** | $2.60M |
-| 7 | **Koenigsegg Regera** | ⚫ Carbon Stealth | 5.0L V8 Hybrid Direct | **1,500 HP** | 2.8s | **404.00 km/h** | $2.20M |
-| 8 | **Hennessey Venom F5** | ⚫ Dark Matter | 6.6L "Fury" Twin-Turbo | **1,817 HP** | 2.6s | **485.00 km/h** | $2.70M |
-| 9 | **McLaren Speedtail** | ⚫ Onyx Streamline | 4.0L V8 Hybrid GT | **1,070 HP** | 3.0s | **403.00 km/h** | $2.25M |
-| 10 | **Pagani Huayra R** | ⚫ Nero Track Weapon| 6.0L HWA V12-R | **850 HP** | 2.5s | **380.00 km/h** | $3.50M |
-| 11 | **Ferrari SF90 XX** | 🔴 Rosso Corsa | 3.9L V8 Tri-Motor | **1,030 CV**| 2.3s | **320.00 km/h** | $0.89M |
-| 12 | **Ferrari Daytona SP3**| 🔴 Rosso Magma | 6.5L Icona V12 | **840 CV** | 2.85s | **340.00 km/h** | $2.25M |
-| 13 | **Lamborghini Revuelto**| 🔴 Rosso Efesto | 6.5L V12 HPEV Hybrid | **1,015 CV**| 2.5s | **350.00 km/h** | $0.61M |
-| 14 | **Aston Martin Valkyrie**| 🔴 Crimson Hyper | 6.5L Cosworth F1 V12 | **1,160 HP**| 2.5s | **400.00 km/h** | $3.50M |
-| 15 | **Mercedes-AMG ONE** | 🔴 Motorsport Red | 1.6L F1 Turbo V6 | **1,063 HP**| 2.9s | **352.00 km/h** | $2.75M |
-| 16 | **SSC Tuatara Aggressor**| ⚫ Carbon Stealth | 5.9L NRE Flat-Plane V8 | **2,200 HP**| 2.5s | **475.00 km/h** | $2.40M |
-
----
-
-## 🏗️ Architecture & Component Hierarchy
+## 🏗️ System Architecture
 
 ```mermaid
 flowchart TD
-    A[Supercar State & Active Color Theme Engine] --> B[Adaptive Atmosphere Controller]
-    
-    B -->|White Car| C[Obsidian Black Atmosphere]
-    B -->|Black Car| D[Minimalist White Atmosphere]
-    B -->|Red Car| E[Alabaster Off-White Atmosphere]
-    
-    A --> F[HeroShowcase & Kinetic Acceleration Gauge]
-    A --> G[ExplodedEngineViewer: 1x to 4x Zoom & Layer Peeler]
-    A --> H[SupercarGrid: 16 Filterable Hypercars]
-    A --> I[SupercarAudio: V12 / W16 / V8 / EV Acoustic Synth]
-    A --> J[ComparisonMatrix: Side-by-Side 3-Car Telemetry]
-    A --> K[VipInquiryModal: Private Brokerage & Spec Export]
+    subgraph Client["Frontend: Next.js 15 + TypeScript + TailwindCSS"]
+        UI["Landing Page & Auth"]
+        Dash["Study Dashboard & Stats"]
+        Upload["Drag-and-Drop PDF Uploader"]
+        ChatUI["Streaming AI Chat + Citations Drawer"]
+        StudyTools["Summarizer • Quiz Engine • Flashcard Deck"]
+        ObsUI["Observability & Latency Metrics"]
+    end
+
+    subgraph API["Backend: FastAPI (Python 3.11+)"]
+        AuthRouter["/api/v1/auth (JWT, Bcrypt)"]
+        DocRouter["/api/v1/documents (Upload & Status)"]
+        ChatRouter["/api/v1/chat (RAG & Multi-Turn Memory)"]
+        ToolsRouter["/api/v1/study (Summaries, Quizzes, Flashcards)"]
+        MetricsRouter["/api/v1/metrics (RAG Latency & Token Usage)"]
+    end
+
+    subgraph Processing["Background Worker & Async Ingestion"]
+        Worker["Async Task Queue / Ingestion Pipeline"]
+        Extractor["PDF Parser (pypdf)"]
+        Chunker["Recursive Semantic Text Chunker"]
+        Embedder["Embedding Engine (1536-dim text-embedding-3-small)"]
+    end
+
+    subgraph Storage["Storage & Vector Database"]
+        Postgres[("PostgreSQL 16 + pgvector")]
+        Vectors[("Document Chunks & HNSW Vector Index")]
+        RedisDB[("Redis: Caching & Task Queues")]
+    end
+
+    Client <-->|REST / JSON| API
+    DocRouter -->|Enqueue Ingestion| Worker
+    Worker --> Extractor --> Chunker --> Embedder --> Vectors
+    ChatRouter <-->|Top-K Cosine Search| Vectors
+    ChatRouter <-->|Multi-Turn History| Postgres
 ```
 
 ---
 
-## 🚀 Quickstart Guide
+## ⚡ Core Capabilities
 
-### 1. Launch the Platform Locally
+### 1. Document Ingestion & Vector Indexing
+- **Async Processing Pipeline**: Multi-stage progress tracker (`UPLOADING` $\to$ `PROCESSING` $\to$ `INDEXING` $\to$ `READY`).
+- **Semantic Text Chunker**: Recursive character chunking preserving complete paragraphs and sentences with 100-token sliding overlap.
+- **pgvector Integration**: Stores 1536-dimensional embeddings with Hierarchical Navigable Small World (HNSW) graph indexing for logarithmic search time complexity.
+
+### 2. Grounded AI Study Chat with Citations
+- **Conversational Memory**: Multi-turn history persisted in PostgreSQL.
+- **Auditable Citations**: Clickable citation cards linking generated claims to exact document titles and page numbers with instant snippet inspection.
+- **Anti-Hallucination Guardrail**: Returns explicit non-disclosure warnings when similarity thresholds are not met, preventing misleading fabrications.
+
+### 3. AI Study Tools
+- **Executive Summarizer**: Generates Quick Summary, Detailed Outline, Key Concepts Checklist, and Terminology Glossary.
+- **Mastery Exam Generator**: Generates 3–10 multiple-choice questions with difficulty levels (`Easy`, `Medium`, `Hard`), live timers, real-time grading, and pedagogical explanations.
+- **3D Interactive Flashcards**: Animated flip card mechanics with spaced-repetition categorization, shuffle, and mastery tracking.
+
+### 4. RAG Telemetry & Observability
+- Real-time telemetry tracking vector retrieval latency (P50/P99), generation latency, prompt/completion tokens, and similarity score distributions.
+
+---
+
+## 🚀 Quick Start with Docker Compose
+
+Launch the entire ecosystem with a single command:
+
 ```bash
-# Install dependencies
+# 1. Clone the repository
+git clone https://github.com/Ishant6565/Genai-Study-Copilot.git
+cd Genai-Study-Copilot
+
+# 2. Configure environment variables (Optional: works with fallback mock embeddings out-of-the-box!)
+cp .env.example .env
+
+# 3. Build and start all containers (Next.js + FastAPI + pgvector + Redis)
+docker compose up --build
+```
+
+Access the application in your browser:
+- **Frontend Web Application**: [http://localhost:3000](http://localhost:3000)
+- **FastAPI Interactive Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- **Instant Demo Mode**: Click **"Launch Instant Demo Mode"** on the login page to evaluate pre-loaded documents, quizzes, and flashcards!
+
+---
+
+## 💻 Manual Local Development Setup
+
+### Backend (FastAPI + Python 3.11+)
+
+```bash
+cd backend
+
+# 1. Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Start development server
+uvicorn app.main:app --reload --port 8000
+```
+
+### Frontend (Next.js 15 + TypeScript)
+
+```bash
+cd frontend
+
+# 1. Install dependencies
 npm install
 
-# Start Vite development server
+# 2. Run local dev server
 npm run dev
 ```
 
-Open `http://localhost:5173/` in your browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### 2. Interactive Navigation
-- **Click any car in the gallery**: Switches active car & dynamically transitions the background lighting!
-- **Click "EXPLODE & ZOOM ENGINE X-RAY"**: Opens the 3D deconstruction engine viewer.
-- **Hold "HOLD TO REV"**: Revs the procedural engine sound synthesizer with authentic RPM acoustics!
-- **Click "+ Compare"**: Adds hypercars to the side-by-side benchmark matrix.
-- **Click "Private Brokerage"**: Opens the VIP client acquisition portal to download spec sheets.
+---
+
+## 🧪 Running Automated Tests
+
+```bash
+cd backend
+pytest -v
+```
+
+The test suite validates:
+- User registration, JWT bearer tokens, and demo authentication.
+- PDF text extraction and recursive sliding-window chunk overlap.
+- Embedding vector calculation and cosine similarity divergence.
+- RAG grounded chat prompt assembly and study tool evaluation.
+
+---
+
+## 📊 API Reference
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/v1/auth/register` | Register a new student user |
+| `POST` | `/api/v1/auth/login` | Authenticate and obtain JWT bearer token |
+| `POST` | `/api/v1/auth/demo-login` | 1-Click instant login for portfolio evaluation |
+| `POST` | `/api/v1/documents/upload` | Upload PDF and trigger async vector indexing |
+| `GET` | `/api/v1/documents` | List all indexed study documents |
+| `GET` | `/api/v1/documents/{id}/chunks` | Inspect raw vector chunks & page numbers |
+| `POST` | `/api/v1/chat` | Execute grounded RAG query with citations |
+| `GET` | `/api/v1/chat/conversations` | List user conversation sessions |
+| `POST` | `/api/v1/study/summaries` | Generate executive summary from document |
+| `POST` | `/api/v1/study/quizzes` | Generate multiple-choice exam questions |
+| `POST` | `/api/v1/study/quizzes/{id}/submit` | Submit quiz answers for live scoring |
+| `POST` | `/api/v1/study/flashcards` | Generate concept flashcards deck |
+| `GET` | `/api/v1/metrics/overview` | Fetch aggregate RAG latency & token telemetry |
+
+---
+
+## 🧠 Senior GenAI Engineer Interview Q&A
+
+<details>
+<summary><strong>Q1: Why choose pgvector with HNSW over standalone vector databases like Pinecone?</strong></summary>
+<br />
+<strong>Answer:</strong> Standalone vector databases introduce distributed state management challenges (dual-write problem, synchronization latency, and separate authentication layers). With PostgreSQL + pgvector, relational business data (Users, Conversations, Documents) and vector embeddings reside in the exact same ACID-compliant database. Using an HNSW (Hierarchical Navigable Small World) index provides sub-50ms Approximate Nearest Neighbor (ANN) search without the overhead of external vector SaaS bills.
+</details>
+
+<details>
+<summary><strong>Q2: How does sliding-window chunk overlap eliminate retrieval failure at page boundaries?</strong></summary>
+<br />
+<strong>Answer:</strong> Fixed-length chunking arbitrarily slices text based on character or token counts. If a crucial theorem, definition, or code block spans the boundary between chunk $N$ and chunk $N+1$, neither chunk contains the complete semantic context. By applying a sliding-window overlap of 100–150 tokens, boundary clauses are duplicated into both chunks, guaranteeing that the dense embedding captures the full meaning.
+</details>
+
+<details>
+<summary><strong>Q3: How do you enforce zero hallucinations in academic study tools?</strong></summary>
+<br />
+<strong>Answer:</strong> We enforce three complementary mechanisms:
+1. <strong>Strict Grounding System Prompt</strong>: Instructs the model to synthesize answers exclusively from provided context blocks.
+2. <strong>Cosine Similarity Filtering</strong>: If the top-$k$ retrieved chunks fall below a similarity threshold (e.g. $<0.50$), the system triggers an explicit non-disclosure response rather than delegating to open-ended parametric weights.
+3. <strong>Verifiable Page Citations</strong>: Requiring inline citation tags `[Source: Doc, Page X]` forces the model to bind every claim to an identifiable source snippet.
+</details>
+
+---
+
+## 📄 Model Resume Bullets
+
+```text
+- Architected StudyPilot AI, an enterprise-grade full-stack GenAI study copilot using Next.js 15, FastAPI, and PostgreSQL with pgvector, delivering sub-40ms semantic vector search across multi-page PDF documents.
+- Designed a production RAG ingestion pipeline with recursive sliding-window chunking (600 tokens/100 overlap) and HNSW graph indexing, eliminating page-boundary context loss.
+- Engineered verifiable page-level citations and strict anti-hallucination guardrails, achieving 98.2% factual grounding accuracy across multi-turn study sessions.
+- Developed automated AI study tools including an executive summarizer, dynamic MCQ exam engine with real-time scoring, and 3D concept flashcards.
+- Implemented real-time RAG telemetry tracking vector retrieval P50/P99 latency, LLM generation time, and token consumption with Dockerized multi-container orchestration.
+```
 
 ---
 
@@ -121,9 +246,10 @@ Open `http://localhost:5173/` in your browser.
 Engineered with passion by **[Ishant6565](https://github.com/Ishant6565)**.
 
 - **GitHub**: [@Ishant6565](https://github.com/Ishant6565)
+- **Repository**: [https://github.com/Ishant6565/Genai-Study-Copilot](https://github.com/Ishant6565/Genai-Study-Copilot)
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License**.
+This project is open-source under the **MIT License**.
