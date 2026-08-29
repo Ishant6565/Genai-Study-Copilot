@@ -10,6 +10,7 @@ from app.api.v1.documents import router as documents_router
 from app.api.v1.chat import router as chat_router
 from app.api.v1.study import router as study_router
 from app.api.v1.metrics import router as metrics_router
+from app.api.v1.interviews import router as interviews_router
 
 
 @asynccontextmanager
@@ -21,7 +22,7 @@ async def lifespan(app: FastAPI):
     # 1. Initialize DB tables & pgvector
     await init_db()
     
-    # 2. Seed default demo data for instant AI study access
+    # 2. Seed default demo data
     async with AsyncSessionLocal() as session:
         try:
             await seed_demo_data(session)
@@ -33,8 +34,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title=f"{settings.APP_NAME} API",
-    description="Direct AI Study Copilot with RAG, PDF processing, grounded chat, quizzes & flashcards.",
+    title=f"{settings.APP_NAME} & InterviewAI API",
+    description="Full-Stack AI Voice Mock Interviewer, RAG Study Copilot, quizzes & evaluation engine.",
     version=settings.APP_VERSION,
     lifespan=lifespan,
     docs_url="/docs",
@@ -60,6 +61,7 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 # Register Routers (Direct access - No auth gate)
+app.include_router(interviews_router, prefix=settings.API_V1_STR)
 app.include_router(documents_router, prefix=settings.API_V1_STR)
 app.include_router(chat_router, prefix=settings.API_V1_STR)
 app.include_router(study_router, prefix=settings.API_V1_STR)
