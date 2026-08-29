@@ -6,7 +6,6 @@ from app.core.config import settings
 from app.core.logging import setup_logging, logger
 from app.core.database import init_db, AsyncSessionLocal
 from app.services.seed_service import seed_demo_data
-from app.api.v1.auth import router as auth_router
 from app.api.v1.documents import router as documents_router
 from app.api.v1.chat import router as chat_router
 from app.api.v1.study import router as study_router
@@ -22,7 +21,7 @@ async def lifespan(app: FastAPI):
     # 1. Initialize DB tables & pgvector
     await init_db()
     
-    # 2. Seed default demo data for immediate portfolio review
+    # 2. Seed default demo data for instant AI study access
     async with AsyncSessionLocal() as session:
         try:
             await seed_demo_data(session)
@@ -35,7 +34,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title=f"{settings.APP_NAME} API",
-    description="Enterprise-Grade AI Study Copilot with RAG, pgvector semantic search, grounded multi-turn chat, quizzes & flashcards.",
+    description="Direct AI Study Copilot with RAG, PDF processing, grounded chat, quizzes & flashcards.",
     version=settings.APP_VERSION,
     lifespan=lifespan,
     docs_url="/docs",
@@ -57,11 +56,10 @@ async def global_exception_handler(request: Request, exc: Exception):
     logger.exception(f"Unhandled server exception on {request.url.path}: {exc}")
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={"detail": "An internal server error occurred. Please check server logs."}
+        content={"detail": "An internal server error occurred."}
     )
 
-# Register Routers
-app.include_router(auth_router, prefix=settings.API_V1_STR)
+# Register Routers (Direct access - No auth gate)
 app.include_router(documents_router, prefix=settings.API_V1_STR)
 app.include_router(chat_router, prefix=settings.API_V1_STR)
 app.include_router(study_router, prefix=settings.API_V1_STR)
