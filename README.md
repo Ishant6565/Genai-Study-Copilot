@@ -1,66 +1,143 @@
 <div align="center">
 
-# 🎙️ InterviewAI (PrepPulse AI)
-### Full-Stack AI Voice & Technical Mock Interview Coach
+# 🤖 MyAppMyWeb (DevAgent AI)
+### Autonomous Multi-Agent Software Development & Self-Healing Platform
 
-[![Author](https://img.shields.io/badge/Author-Ishant6565-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Ishant6565)
-[![License](https://img.shields.io/badge/License-MIT-18181b?style=for-the-badge)](LICENSE)
+[![LangGraph](https://img.shields.io/badge/LangGraph-StateGraph-000000?style=for-the-badge&logo=python&logoColor=white)](https://langchain-ai.github.io/langgraph/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-000000?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Next.js](https://img.shields.io/badge/Next.js_15-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![Web Speech API](https://img.shields.io/badge/Web_Speech_API-TTS_%26_STT-3b82f6?style=for-the-badge)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API)
+[![Docker](https://img.shields.io/badge/Docker-Sandboxed_Harness-000000?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript_5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Docker](https://img.shields.io/badge/Docker_Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Security](https://img.shields.io/badge/Security-Policy_Enforced-000000?style=for-the-badge&logo=shield&logoColor=white)](SECURITY.md)
+[![License](https://img.shields.io/badge/License-MIT-000000?style=for-the-badge)](LICENSE)
 
 <br />
 
 <p align="center">
-  <strong>An interactive, full-stack AI Mock Interview Platform inspired by real-world tech hiring loops.</strong><br />
-  Live AI Voice Interviewer • Speech-to-Text Microphone Recording • Webcam Video Simulator • Dynamic Real-Time Follow-Ups • Comprehensive Hiring Scorecards with Model Expert Answers • Role Question Bank
+  <strong>A state-of-the-art autonomous software engineering platform that transforms natural language prompts into production-grade, tested, and self-healed full-stack codebases.</strong><br />
+  Multi-Agent LangGraph DAG • Ephemeral Docker Code Sandboxing • Automated Jest/Supertest/Pytest Harnesses • Real-Time Self-Healing Feedback Loops • Interactive Live App Preview • 1-Click GitHub & ZIP Export
 </p>
 
 <p align="center">
-  <a href="#-quick-start">Quickstart</a> •
-  <a href="#-features--tracks">Interview Tracks</a> •
+  <a href="#-ui-command-center-showcase">UI Showcase</a> •
+  <a href="#-key-capabilities--workflow">Key Capabilities</a> •
   <a href="#-system-architecture">Architecture</a> •
+  <a href="#-security-architecture--sandbox-boundaries">Security & Sandboxing</a> •
+  <a href="#-quick-start-guide">Quick Start</a> •
   <a href="#-api-reference">API Reference</a> •
-  <a href="#-senior-engineer-interview-qa">Interview Q&A</a>
+  <a href="#-author">Author</a>
 </p>
 
 </div>
 
 ---
 
-## 🌟 Overview
+## 🖥️ UI Command Center Showcase
 
-**InterviewAI** is an AI-powered mock interview coach built to bridge the gap between technical knowledge and verbal communication. 
+<div align="center">
 
-### Key Capabilities:
-1. **🎙️ Live AI Voice Interviewer**:
-   - Web Speech Synthesis speaks role-specific technical questions aloud with animated audio waveforms.
-2. **🗣️ Real-Time Candidate Transcription**:
-   - Web Speech Recognition transcribes candidate speech directly into the response editor with live word count tracking.
-3. **📹 Interactive Webcam Simulator**:
-   - Live video stream preview replicating Zoom / Google Meet interview setups.
-4. **⚡ Dynamic Follow-Up Questioning**:
-   - The AI evaluates candidate responses and asks real-time follow-ups on edge cases, scaling bottlenecks, and trade-offs.
-5. **📊 Comprehensive Hiring Scorecard**:
-   - Overall Hiring Verdict (`Strong Hire`, `Hire`, `Lean Hire`, `Needs Improvement`) with score out of 100.
-   - 4-Pillar Metric Breakdown (Technical Depth, Communication, Problem Solving, Edge Cases).
-   - Question-by-Question Deep Dive with **🌟 Top-Tier Expert Model Answers**.
-6. **📚 Question Bank & History**:
-   - Searchable repository of top interview questions by track and past performance trends.
+### 1. Master Command Center & Multi-Agent LangGraph DAG
+*Autonomous SWE Prompt Engine with presets, visual 5-Agent DAG pipeline, 9-stage task checklist, and multi-file code viewer.*
+
+![Master Command Center & Multi-Agent DAG](docs/images/dashboard-overview.png)
+
+<br />
+
+### 2. Ephemeral Docker Sandbox Stream & Autonomous Self-Healing Loop
+*Real-time containerized test execution catching assertion errors and automatically triggering developer agent self-healing loops.*
+
+![Docker Sandbox Stream & Self-Healing](docs/images/docker-stream-self-healing.png)
+
+<br />
+
+### 3. Interactive Live App Preview Sandbox
+*Instant live application sandbox with responsive device switcher (Desktop, Tablet, Mobile), theme toggle, and interactive state.*
+
+![Interactive Live App Preview](docs/images/live-app-preview.png)
+
+<br />
+
+### 4. 1-Click Export & Direct Push to GitHub Integration
+*Publish generated full-stack repositories directly to GitHub with automated manifests or download complete ZIP bundles.*
+
+![Direct GitHub Export Modal](docs/images/github-export-modal.png)
+
+</div>
 
 ---
 
-## 🎯 Curated Interview Tracks
+## 🌟 Key Capabilities & Workflow
 
-| Track | Target Roles | Core Topics |
+### 1. 🧠 Multi-Agent Orchestration (LangGraph State Machine)
+Unlike naive single-prompt code generators, **MyAppMyWeb** orchestrates **5 specialized autonomous agents** connected in a stateful execution graph:
+
+```text
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐     ┌──────────────────┐     ┌──────────────────┐
+│  👑 Manager     │ ──► │  💻 Developer    │ ──► │  🧪 Tester      │ ──► │  🛡️ Reviewer     │ ──► │  📝 Doc Agent    │
+│  Spec & Task DAG│     │  Code Synthesis  │     │  Docker Sandbox │     │  Security & AST  │     │  README & OpenAPI│
+└─────────────────┘     └──────────────────┘     └─────────────────┘     └──────────────────┘     └──────────────────┘
+                               ▲                          │
+                               └────── Failing Trace ─────┘
+                                    (Self-Healing Loop)
+```
+
+| Agent | Responsibility | Core Deliverables |
 | :--- | :--- | :--- |
-| **🤖 GenAI & RAG Engineer** | Senior AI / LLM Systems Engineer | pgvector HNSW, Sliding-Window Chunking, Hallucination Guardrails, Agent Tool Calling |
-| **💻 Full Stack Developer** | Senior Full Stack Engineer | Next.js Server Components, FastAPI AsyncIO, Redis Caching, PostgreSQL Indexing, JWT |
-| **🏗️ System Design** | Staff Distributed Systems Architect | Google Docs CRDTs, Distributed Rate Limiter, Kafka vs RabbitMQ, CAP Theorem |
-| **🎨 Frontend Specialist** | Senior React & UI Architect | React 19 Reconciliation, Core Web Vitals (LCP/INP), Custom Hooks, State Architecture |
-| **🌟 Behavioral (STAR)** | Engineering Leadership | Outage Post-Mortems, Architectural Disagreements, Tight Deadlines, Mentorship |
+| **👑 Manager Agent** | Natural Language Spec Decomposition | Technical Architecture, Tech Stack Selection, and 9-Stage Task Execution DAG |
+| **💻 Developer Agent** | Full-Stack Multi-File Synthesis | 15+ Source Files across Frontend (React/Next.js) & Backend (Express/FastAPI/MongoDB) |
+| **🧪 Tester Agent** | Automated Test Generation & Sandboxing | Unit & Integration Test Suites (Jest, Supertest, Pytest) executed in Docker |
+| **🔄 Self-Healing Router**| Failure Trace Inspection & Auto-Correction | Real-time AST error diagnosis and Before/After Git Diff patches |
+| **🛡️ Reviewer Agent** | Static Code Analysis & Security Audit | Grade A+ (96/100) Quality Scorecard, OWASP Top 10 compliance check |
+| **📝 Doc Agent** | Production-Ready Documentation | Comprehensive README, API documentation, and OpenAPI 3.0 specifications |
+
+---
+
+### 2. 🔄 Closed-Loop Self-Healing Engine
+When an assertion fails inside the Docker test sandbox, the platform automatically intercepts the error, locates the failing line, and triggers a surgical repair:
+
+```mermaid
+flowchart TD
+    Tester["🧪 Tester Agent: Executes Test Suite in Docker"] --> AssertCheck{"All Tests Pass?"}
+    AssertCheck -- Yes --> Reviewer["🛡️ Reviewer Agent: Security & AST Audit"]
+    AssertCheck -- No --> TraceExtractor["Extract Failing File, Line Number & AssertionError"]
+    TraceExtractor --> DevPatch["💻 Developer Agent: Synthesizes Corrected Code"]
+    DevPatch --> DiffRecord["Record Unified Git Diff: Old vs Self-Healed"]
+    DiffRecord --> SandboxRetest["🐳 Docker Sandbox: Re-run Test Harness"]
+    SandboxRetest --> AssertCheck
+    Reviewer --> DocAgent["📝 Doc Agent: OpenAPI & Final Artifacts"]
+```
+
+---
+
+### 3. 🖥️ Interactive Live App Preview Sandbox
+- **Responsive Viewport Toggles**: Seamlessly test generated apps across `🖥️ Desktop (100%)`, `💻 Tablet (720px)`, and `📱 Mobile (375px)`.
+- **Isolated Iframe Execution**: Live interactivity without host machine contamination.
+- **Dynamic State Simulation**: Add, filter, complete, and delete records in real-time.
+- **Theme Support**: Integrated dark and light mode toggle.
+
+---
+
+### 4. 📦 1-Click Export & GitHub Integration
+- **Download Standalone ZIP**: Instantly bundle the entire generated workspace into a ready-to-run archive.
+- **Push to GitHub**: Direct Personal Access Token / OAuth integration to scaffold a new remote repository with atomic commit history.
+
+---
+
+## 🛡️ Security Architecture & Sandbox Boundaries
+
+MyAppMyWeb executes generated code inside hardened ephemeral environments to prevent Arbitrary Code Execution (ACE) and sandbox escapes:
+
+| Control | Specification | Security Objective |
+| :--- | :--- | :--- |
+| **Network Isolation** | `--network none` | Prevents unauthorized telemetry, external network access, and reverse shells. |
+| **User Privileges** | `UID 1000:1000` (Non-Root) | Disables root privilege escalation inside the container. |
+| **Root Filesystem** | `read-only` | Protects base system libraries and container binaries from unauthorized tampering. |
+| **Linux Capabilities**| `--cap-drop=ALL` | Drops all raw kernel, socket, and mounting capabilities. |
+| **Resource Limits** | `512MB RAM`, `1.0 CPU`, `64 PIDs` | Prevents fork bombs and Host Out-of-Memory (OOM) resource starvation. |
+| **Execution Watchdog** | `30s Strict Timeout` | Terminates blocking or infinite loops automatically. |
+
+> Detailed documentation: [**`SECURITY.md`**](SECURITY.md) • [**`security/threat-model.md`**](security/threat-model.md) • [**`security/sandbox-policy.md`**](security/sandbox-policy.md)
 
 ---
 
@@ -68,54 +145,63 @@
 
 ```mermaid
 flowchart TD
-    subgraph Client["Frontend: Next.js 15 + TypeScript + Tailwind CSS"]
-        Launchpad["Launchpad & Track Selector (/)"]
-        VoiceRoom["Live AI Voice Interview Room (/interview/:id)"]
-        TTS["Web Speech Synthesis (AI Voice)"]
-        STT["Web Speech Recognition (Mic Input)"]
-        Webcam["Webcam & MediaStream Simulator"]
-        Scorecard["AI Evaluation Scorecard (/feedback/:id)"]
-        QBank["Role Question Bank (/questions)"]
+    subgraph UI["Frontend: Next.js 15 Command Center"]
+        PromptBox["Autonomous SWE Prompt Engine"]
+        AgentDAG["Multi-Agent State Graph Visualizer"]
+        TaskBoard["Task DAG Checklist (9 Stages)"]
+        FileTree["Hierarchical Explorer & Syntax Viewer"]
+        DiffView["Self-Healing Before/After Diff Viewer"]
+        LivePreview["Interactive App Preview Sandbox"]
+        Terminal["Live Docker ANSI Log Stream (SSE)"]
     end
 
     subgraph API["Backend: FastAPI (Python 3.11)"]
-        StartEndpoint["POST /api/v1/interviews/start"]
-        AnswerEndpoint["POST /api/v1/interviews/:id/answer"]
-        EvalEndpoint["POST /api/v1/interviews/:id/evaluate"]
-        HistoryEndpoint["GET /api/v1/interviews"]
+        SSEStream["POST /api/v1/agent/run/stream"]
+        ExportAPI["GET /api/v1/agent/export-zip"]
+        GitHubAPI["POST /api/v1/agent/push-github"]
+        HealthAPI["GET /health"]
     end
 
-    subgraph Core["Engine & Intelligence"]
-        QGenerator["Dynamic Question & Follow-Up Engine"]
-        Scorer["4-Pillar Evaluation & Scorecard Synthesizer"]
-        DB[("PostgreSQL / SQLite Database")]
+    subgraph Orchestration["Agent Execution Engine (LangGraph)"]
+        Manager["👑 Manager Agent"]
+        Developer["💻 Developer Agent"]
+        Tester["🧪 Tester Agent"]
+        Reviewer["🛡️ Reviewer Agent"]
+        DocAgent["📝 Documentation Agent"]
     end
 
-    Launchpad --> StartEndpoint --> DB
-    VoiceRoom <--> AnswerEndpoint --> QGenerator
-    VoiceRoom --> EvalEndpoint --> Scorer --> Scorecard
+    subgraph Sandboxing["Execution Safety"]
+        DockerRunner["Docker Ephemeral Sandbox / Subprocess"]
+        VirtualFS["In-Memory Virtual AST Filesystem"]
+    end
+
+    PromptBox --> SSEStream --> Manager --> Developer --> VirtualFS --> DockerRunner --> Tester
+    Tester -. Failing Trace .-> Developer
+    Tester -- 100% Passed --> Reviewer --> DocAgent
+    VirtualFS --> ExportAPI & GitHubAPI
+    DockerRunner -. ANSI Stream .-> Terminal
 ```
 
 ---
 
-## 🚀 Quick Start
+## 🛠️ Quick Start Guide
 
-### 1. Run with Docker Compose
+### Prerequisites
+- **Python 3.10+**
+- **Node.js 18+** & **npm**
+- *(Optional)* **Docker Desktop** (for containerized execution)
+
+### 1. Start Backend Server
 ```bash
-docker compose up --build
+cd backend
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python -m uvicorn app.main:app --port 8000 --reload
 ```
 
-### 2. Manual Local Development
-
+### 2. Start Frontend Command Center
 ```bash
-# Backend (FastAPI + Python)
-cd backend
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-
-# Frontend (Next.js 15)
 cd frontend
 npm install
 npm run dev
@@ -129,33 +215,78 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser!
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `POST` | `/api/v1/interviews/start` | Initialize interview session & generate questions |
-| `GET` | `/api/v1/interviews/{id}` | Fetch active interview session and question list |
-| `POST` | `/api/v1/interviews/{id}/answer` | Submit candidate response & receive follow-up |
-| `POST` | `/api/v1/interviews/{id}/evaluate` | Generate comprehensive hiring scorecard |
-| `GET` | `/api/v1/interviews` | List previous interview history & performance |
+| `POST` | `/api/v1/agent/run/stream` | Stream real-time agent execution events, DAG progress, and Docker logs via SSE |
+| `GET` | `/api/v1/agent/export-zip` | Download the generated project files as a compressed ZIP archive |
+| `POST` | `/api/v1/agent/push-github` | Export the generated codebase directly to a remote GitHub repository |
+| `GET` | `/health` | Service health check and uptime status |
 
 ---
 
-## 🧠 Senior Engineer Interview Q&A
+## 📂 Repository Structure
 
-<details>
-<summary><strong>Q1: How does Web Speech API handle real-time continuous transcription?</strong></summary>
-<br />
-<strong>Answer:</strong> The Web Speech Recognition API streams microphone audio chunks into a local recognition engine, emitting continuous <code>onresult</code> events with interim and final transcript segments. We aggregate final segments while providing instant visual feedback on interim words.
-</details>
-
-<details>
-<summary><strong>Q2: How does InterviewAI assess technical answers without strict keyword matching?</strong></summary>
-<br />
-<strong>Answer:</strong> The evaluation pipeline analyzes conceptual coverage (e.g. mentions of ACID compliance, HNSW graph complexity, cache stampede mitigation), structural articulation (STAR method for behavioral, Trade-off analysis for architecture), and edge-case awareness rather than naive keyword matching.
-</details>
+```text
+MyAppMyWeb/
+├── .github/
+│   ├── workflows/
+│   │   ├── ci.yml                # CI Test & Verification Pipeline
+│   │   └── security-scan.yml     # CodeQL & Security Scanner
+│   └── dependabot.yml            # Automated Dependency Management
+├── docs/
+│   └── images/                   # High-Resolution UI Screenshots
+│       ├── dashboard-overview.png
+│       ├── docker-stream-self-healing.png
+│       ├── live-app-preview.png
+│       └── github-export-modal.png
+├── backend/
+│   ├── app/
+│   │   ├── agents/               # Multi-Agent Definitions
+│   │   │   ├── manager.py        # Spec & Task Decomposition
+│   │   │   ├── developer.py      # Code Generation & Self-Healing
+│   │   │   ├── tester.py         # Test Harness Runner
+│   │   │   ├── reviewer.py       # Static Code & AST Security Audit
+│   │   │   └── documentation.py  # Markdown & OpenAPI Generator
+│   │   ├── api/                  # FastAPI REST & SSE Endpoints
+│   │   ├── graph/                # LangGraph StateGraph Engine
+│   │   ├── sandbox/              # Docker & Virtual FS Sandboxing
+│   │   └── main.py               # Application Entrypoint
+│   ├── Dockerfile
+│   └── requirements.txt
+├── frontend/
+│   ├── src/
+│   │   ├── app/                  # Next.js 15 App Router
+│   │   └── components/           # Command Center UI Components
+│   │       ├── Header.tsx        # Telemetry & Status Bar
+│   │       ├── AgentDAGVisualizer.tsx
+│   │       ├── TaskBoard.tsx     # 9-Stage Task Execution Checklist
+│   │       ├── CodeEditorView.tsx# Explorer & Code Viewer
+│   │       ├── DiffViewer.tsx    # Self-Healing Git Diff Comparison
+│   │       ├── LiveAppPreview.tsx# Interactive App Simulator
+│   │       ├── ScorecardReview.tsx # Security & Quality Scorecard
+│   │       ├── TerminalLogStream.tsx
+│   │       └── GitHubModal.tsx   # Direct Push Dialog
+│   ├── Dockerfile
+│   └── package.json
+├── security/
+│   ├── threat-model.md           # STRIDE & OWASP Mitigation Matrix
+│   └── sandbox-policy.md         # Hardening & Security Standards
+├── docker-compose.yml
+├── SECURITY.md
+├── CONTRIBUTING.md
+├── LICENSE
+└── README.md
+```
 
 ---
 
 ## 👤 Author
 
-Developed by **[Ishant6565](https://github.com/Ishant6565)**.
+Developed with ❤️ by **[Ishant6565](https://github.com/Ishant6565)**.
 
-- **GitHub**: [@Ishant6565](https://github.com/Ishant6565)
+- **GitHub Profile**: [@Ishant6565](https://github.com/Ishant6565)
 - **Repository**: [https://github.com/Ishant6565/Genai-Study-Copilot](https://github.com/Ishant6565/Genai-Study-Copilot)
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
